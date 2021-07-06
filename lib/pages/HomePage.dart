@@ -18,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage>{
   static List<Widget> _pageList = [
     ChangeRatePage(title: '変動率(先物)'),
     ChangeRateSpotPage(title: '変動率(現物)'),
-    CustomPage1(pannelColor: Colors.green, title: '高卒たん'),
+    HighSchoolPage(title: '高卒たんメソッド'),
     CustomPage2(pannelColor: Colors.pink, title: '高卒たん改')
   ];
 
