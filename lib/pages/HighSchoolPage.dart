@@ -252,6 +252,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
         },
       ),
       //判断
+      /*
       TextButton(
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
@@ -266,6 +267,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
           setState(() {});
         },
       ),
+       */
       //オススメ
       TextButton(
         style: TextButton.styleFrom(
@@ -273,7 +275,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
         ),
         child: _getTitleItemWidget(
             '評価' + (sortType == sortRecommend ? (isAscending ? '↓' : '↑') : ''),
-            50),
+            100),
         onPressed: () {
           sortType = sortRecommend;
           isAscending = !isAscending;
@@ -545,12 +547,23 @@ class _MyHomePageState extends State<HighSchoolPage> {
   }
   // 左端固定列の設定
   Widget _generateFirstColumnRow(BuildContext context, int index) {
+    int lp = data.cryptoInfo[index].lPoint;
+    int sp = data.cryptoInfo[index].sPoint;
+    int point = lp + sp;
+    Color c = Colors.white;
+    if (lp > 0){
+      c = Colors.lightGreen.shade50;
+    }
+    if (sp > 0) {
+      c = Colors.pink.shade50;
+    }
     return Container(
       child: Text(data.cryptoInfo[index].pair.replaceFirst('USDT', '')),
       width: 90,
       height: 40,
       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
+      color: c,
     );
   }
   // 変動率表示のテキストカラー
@@ -571,12 +584,29 @@ class _MyHomePageState extends State<HighSchoolPage> {
   }
   // 列の表示
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
-    int point = data.cryptoInfo[index].lPoint + data.cryptoInfo[index].sPoint;
+    int lp = data.cryptoInfo[index].lPoint;
+    int sp = data.cryptoInfo[index].sPoint;
+    int point = lp + sp;
     double devRate = data.cryptoInfo[index].price / data.cryptoInfo[index].kPrice1 * 100 -100;
+    String rate = data.cryptoInfo[index].Judgement + " ";
+    if( point > 0 ){
+      for (int i = 0; i < point; i++){
+        rate += '★';
+      }
+    }
     devRate = (devRate * 100).floor() / 100;
+    Color c = Colors.white;
+    if (lp > 0){
+      c = Colors.lightGreen.shade50;
+    }
+    if (sp > 0) {
+      c = Colors.pink.shade50;
+    }
+
     return Row(
       children: <Widget>[
         // 判断
+        /*
         Container(
           child: Text(data.cryptoInfo[index].Judgement),
           width: 50,
@@ -584,13 +614,15 @@ class _MyHomePageState extends State<HighSchoolPage> {
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
         ),
+         */
         // オススメ
         Container(
-          child: Text(point.toString()),
-          width: 50,
+          child: Text(rate),
+          width: 100,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // 現在価格
         Container(
@@ -603,6 +635,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
+          color: c,
         ),
         // 適正価格1
         Container(
@@ -615,6 +648,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
+          color: c,
         ),
         // 適正価格2
         Container(
@@ -627,6 +661,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
+          color: c,
         ),
         // 適正価格3
         Container(
@@ -639,6 +674,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
+          color: c,
         ),
         // ロングエントリー推奨価格
         Container(
@@ -651,6 +687,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
+          color: c,
         ),
         // ショートエントリー推奨価格
         Container(
@@ -663,6 +700,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
+          color: c,
         ),
         // 傾向
         Container(
@@ -670,7 +708,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // 適正価格乖離率
         Container(
@@ -678,7 +717,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // EMA200乖離率
         Container(
@@ -686,7 +726,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // EMA100乖離率
         Container(
@@ -694,7 +735,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // EMA50乖離率
         Container(
@@ -702,7 +744,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // BTCEMA200乖離率
         Container(
@@ -710,7 +753,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // RSI14
         Container(
@@ -718,7 +762,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // BTC連動率
         Container(
@@ -726,7 +771,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // BTC連動率
         Container(
@@ -734,7 +780,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
         // 変動率
         Container(
@@ -742,7 +789,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           width: 80,
           height: 40,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
+          alignment: Alignment.centerLeft,
+          color: c,
         ),
 
       ],
