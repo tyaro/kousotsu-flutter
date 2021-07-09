@@ -10,9 +10,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Crypto Info',
       home: MyHomePage(),
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue,),
+      darkTheme: ThemeData.dark(),
       //home: ChangeRatePage(title: '先物変動率リスト'),
     );
   }

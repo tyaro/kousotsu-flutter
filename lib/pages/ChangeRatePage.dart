@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import '../apiRequest.dart';
 import '../model/ChangeRateInfo.dart';
+import 'dart:async';
 
 class ChangeRatePage extends StatefulWidget {
   ChangeRatePage({Key? key, required this.title}) : super(key: key);
@@ -26,19 +27,54 @@ class _MyHomePageState extends State<ChangeRatePage> {
   static const int sortCRate720 = 9;
   bool isAscending = true;
   int sortType = sortPair;
-
+  bool firstFlag = true;
+  int samplingTime = 1;
   ChangeRateInfos data = new ChangeRateInfos();
 
 
   @override
   void initState()  {
+    Timer.periodic(
+      Duration(seconds: samplingTime),
+      _onTimer,
+    );
     super.initState();
+    if (firstFlag == true){
+      firstFlag = false;
+      samplingTime = 5;
+    }
+    /*
     fetchChangeRateInfo().then((value) {
       setState(() {
         data.cryptoInfo = value;
       });
     });
+    */
   }
+
+  void _onTimer(Timer timer) {
+    bool isTemp = isAscending;
+    int temp = sortType;
+    fetchChangeRateInfo().then((value) {
+      if (!mounted) {return;}
+      setState(() {
+        data.cryptoInfo = value;
+        sortType = temp;
+        isAscending = isTemp;
+        if(sortType == sortPair){data.sortPair(isAscending);}
+        if(sortType == sortPrice){data.sortPrice(isAscending);}
+        if(sortType == sortCRate05){data.sortCRate05(isAscending);}
+        if(sortType == sortCRate10){data.sortCRate10(isAscending);}
+        if(sortType == sortCRate30){data.sortCRate30(isAscending);}
+        if(sortType == sortCRate60){data.sortCRate60(isAscending);}
+        if(sortType == sortCRate240){data.sortCRate240(isAscending);}
+        if(sortType == sortCRate360){data.sortCRate360(isAscending);}
+        if(sortType == sortCRate480){data.sortCRate480(isAscending);}
+        if(sortType == sortCRate720){data.sortCRate720(isAscending);}
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +96,7 @@ class _MyHomePageState extends State<ChangeRatePage> {
   // 情報エリア
   Widget _getInfoDataTableWidget(double height){
     return Container(
-      color: Colors.white,
+      //color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -77,7 +113,7 @@ class _MyHomePageState extends State<ChangeRatePage> {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(6),
     ),
-    color: Colors.pink.shade50,
+    color: Theme.of(context).cardColor,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,12 +141,12 @@ class _MyHomePageState extends State<ChangeRatePage> {
   // ＞0 で緑色
   // ＜0 で赤色
   Text _getPercentText2(double percent){
-    Color textColor = Colors.black;
+    Color textColor = Theme.of(context).highlightColor;
     if (percent > 0){
       textColor = Colors.green;
     }
     if (percent < 0){
-      textColor = Colors.red;
+      textColor = Colors.pink.shade100;
     }
     return Text(
       percent.toString() + "%",
@@ -119,10 +155,11 @@ class _MyHomePageState extends State<ChangeRatePage> {
   }
   Widget _BTCChangeRate(){
     List<dynamic> list = List.of(data.cryptoInfo);
-    var rows = [Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%')];
+    var rows = [Text('nan'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%'),Text('nan%')];
     if (list.length > 0) {
       final btcDataIndex = list.indexWhere((item) => item.pair == 'BTCUSDT');
       rows = [
+        Text("\$" + list[btcDataIndex].price.toString(),style:TextStyle(color:Colors.amber)),
         _getPercentText2(list[btcDataIndex].CRate05),
         _getPercentText2(list[btcDataIndex].CRate10),
         _getPercentText2(list[btcDataIndex].CRate30),
@@ -135,12 +172,13 @@ class _MyHomePageState extends State<ChangeRatePage> {
     }
     return DataTable(
       columnSpacing: 5,
-      headingTextStyle: TextStyle(fontSize: 10,),
+      headingTextStyle: TextStyle(fontSize: 10,color:Theme.of(context).indicatorColor,),
       horizontalMargin: 10,
       headingRowHeight: 12,
-      dataTextStyle: TextStyle(fontSize: 13,),
+      dataTextStyle: TextStyle(fontSize: 10,),
       dataRowHeight: 16,
       columns: const <DataColumn>[
+        DataColumn(label: Text('Price')),
         DataColumn(label: Text('5min')),
         DataColumn(label: Text('10min')),
         DataColumn(label: Text('30min')),
@@ -161,6 +199,7 @@ class _MyHomePageState extends State<ChangeRatePage> {
             DataCell(rows[5]),
             DataCell(rows[6]),
             DataCell(rows[7]),
+            DataCell(rows[8]),
           ],
         ),
       ]
@@ -179,12 +218,13 @@ class _MyHomePageState extends State<ChangeRatePage> {
         rightSideItemBuilder: _generateRightHandSideColumnRow,
         itemCount: data.cryptoInfo.length,
         rowSeparatorWidget: const Divider(
-          color: Colors.black54,
           height: 1.0,
           thickness: 0.0,
         ),
-        leftHandSideColBackgroundColor: Color(0xFFFFFFFF),
-        rightHandSideColBackgroundColor: Color(0xFFFFFFFF),
+        //leftHandSideColBackgroundColor: Color(0xFFFFFFFF),
+        //rightHandSideColBackgroundColor: Color(0xFFFFFFFF),
+        leftHandSideColBackgroundColor: Theme.of(context).scaffoldBackgroundColor ,
+        rightHandSideColBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
         verticalScrollbarStyle: const ScrollbarStyle(
           thumbColor: Colors.yellow,
           isAlwaysShown: true,
@@ -287,7 +327,7 @@ class _MyHomePageState extends State<ChangeRatePage> {
                 (sortType == sortCRate30 ? (isAscending ? '↓' : '↑') : ''),
             80),
         onPressed: () {
-          sortType = sortCRate05;
+          sortType = sortCRate30;
           isAscending = !isAscending;
           data.sortCRate30(isAscending);
           setState(() {});
@@ -394,7 +434,7 @@ class _MyHomePageState extends State<ChangeRatePage> {
   // ＞0 で緑色
   // ＜0 で赤色
   Text _getPercentText(double percent){
-    Color textColor = Colors.black;
+    Color textColor = Colors.amber;
     if (percent > 0){
       textColor = Colors.green;
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import '../apiRequest.dart';
 import '../model/kousotsutanInfo.dart';
+import 'dart:async';
 
 class HighSchoolPage extends StatefulWidget {
   HighSchoolPage({Key? key, required this.title}) : super(key: key);
@@ -36,16 +37,47 @@ class _MyHomePageState extends State<HighSchoolPage> {
 
   bool isAscending = true;
   int sortType = sortPair;
-
+  bool firstFlag = true;
+  int samplingTime = 1;
   kousotsutanInfos data = new kousotsutanInfos();
 
 
   @override
   void initState()  {
+    Timer.periodic(
+      Duration(seconds: samplingTime),
+      _onTimer,
+    );
     super.initState();
+    if (firstFlag == true){
+      firstFlag = false;
+      samplingTime = 5;
+    }
+    /*
     fetchKousotsutanInfo().then((value) {
       setState(() {
         data.cryptoInfo = value;
+      });
+    });
+   */
+  }
+
+  void _onTimer(Timer timer) {
+    bool isTemp = isAscending;
+    int temp = sortType;
+    fetchKousotsutanInfo().then((value) {
+      if (!mounted) {return;}
+      setState(() {
+        data.cryptoInfo = value;
+        sortType = temp;
+        isAscending = isTemp;
+        if(sortType == sortPair){data.sortPair(isAscending);}
+        if(sortType == sortPrice){data.sortPrice(isAscending);}
+        if(sortType == sortRecommend){data.sortRecommend(isAscending);}
+        if(sortType == sortDevRate){data.sortDevRate(isAscending);}
+        if(sortType == sortBTCFRUp){data.sortBTCFRUp(isAscending);}
+        if(sortType == sortBTCFRDown){data.sortBTCFRDown(isAscending);}
+        if(sortType == sortChangeRate){data.sortChangeRate(isAscending);}
       });
     });
   }
@@ -70,7 +102,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
   // 情報エリア
   Widget _getInfoDataTableWidget(double height){
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -115,7 +147,7 @@ class _MyHomePageState extends State<HighSchoolPage> {
   // ＞0 で緑色
   // ＜0 で赤色
   Text _getPercentText2(double percent){
-    Color textColor = Colors.black;
+    Color textColor = Colors.amber;
     if (percent > 0){
       textColor = Colors.green;
     }
@@ -149,10 +181,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
     }
     return DataTable(
         columnSpacing: 5,
-        headingTextStyle: TextStyle(fontSize: 10,),
+        headingTextStyle: TextStyle(fontSize: 10,color:Theme.of(context).indicatorColor,),
         horizontalMargin: 10,
         headingRowHeight: 12,
-        dataTextStyle: TextStyle(fontSize: 13,),
+        dataTextStyle: TextStyle(fontSize: 10,),
         dataRowHeight: 16,
         columns: const <DataColumn>[
           DataColumn(label: Text('現在価格')),
@@ -200,8 +232,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
           height: 1.0,
           thickness: 0.0,
         ),
-        leftHandSideColBackgroundColor: Color(0xFFFFFFFF),
-        rightHandSideColBackgroundColor: Color(0xFFFFFFFF),
+        leftHandSideColBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        rightHandSideColBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
         verticalScrollbarStyle: const ScrollbarStyle(
           thumbColor: Colors.yellow,
           isAlwaysShown: true,
@@ -308,10 +340,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
             '適正価格\n9時〜',
             100),
         onPressed: () {
-          sortType = sortkPrice1;
-          isAscending = !isAscending;
+          //sortType = sortkPrice1;
+          //isAscending = !isAscending;
           //data.sortCRate05(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // 適正価格2
@@ -323,8 +355,8 @@ class _MyHomePageState extends State<HighSchoolPage> {
             '適正価格\n明日\n9時〜',
             100),
         onPressed: () {
-          sortType = sortkPrice2;
-          isAscending = !isAscending;
+          //sortType = sortkPrice2;
+          //isAscending = !isAscending;
           //data.sortCRate05(isAscending);
           setState(() {});
         },
@@ -338,10 +370,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
             '適正価格\n明後日\n9時〜',
             100),
         onPressed: () {
-          sortType = sortkPrice3;
-          isAscending = !isAscending;
+          //sortType = sortkPrice3;
+          //isAscending = !isAscending;
           //data.sortCRate05(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // ロングエントリ推奨価格
@@ -353,10 +385,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
             'ロング\nエントリ\n推奨価格',
             100),
         onPressed: () {
-          sortType = sortLEPrice;
-          isAscending = !isAscending;
+          //sortType = sortLEPrice;
+          //isAscending = !isAscending;
           //data.sortCRate05(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // ショートエントリ推奨価格
@@ -368,10 +400,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
             'ショート\nエントリ\n推奨価格',
             100),
         onPressed: () {
-          sortType = sortSEPrice;
-          isAscending = !isAscending;
+          //sortType = sortSEPrice;
+          //isAscending = !isAscending;
           //data.sortCRate05(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // 傾向
@@ -383,10 +415,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
             '3~2日前\n高値安値\n推移',
             80),
         onPressed: () {
-          sortType = sortTrend;
-          isAscending = !isAscending;
+          //sortType = sortTrend;
+          //isAscending = !isAscending;
           //data.sortCRate05(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // 適正価格乖離率
@@ -415,10 +447,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
                 (sortType == sortDREMA200 ? (isAscending ? '↓' : '↑') : ''),
             80),
         onPressed: () {
-          sortType = sortDREMA200;
-          isAscending = !isAscending;
+          //sortType = sortDREMA200;
+          //isAscending = !isAscending;
           //data.sortDREMA200(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // EMA(100)乖離率
@@ -431,10 +463,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
                 (sortType == sortDREMA100 ? (isAscending ? '↓' : '↑') : ''),
             80),
         onPressed: () {
-          sortType = sortDREMA100;
-          isAscending = !isAscending;
+          //sortType = sortDREMA100;
+          //isAscending = !isAscending;
           //data.sortDREMA200(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // EMA(50)乖離率
@@ -447,10 +479,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
                 (sortType == sortDREMA50 ? (isAscending ? '↓' : '↑') : ''),
             80),
         onPressed: () {
-          sortType = sortDREMA50;
-          isAscending = !isAscending;
+          //sortType = sortDREMA50;
+          //isAscending = !isAscending;
           //data.sortDREMA200(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // EMA(200)BTC乖離率
@@ -463,10 +495,10 @@ class _MyHomePageState extends State<HighSchoolPage> {
                 (sortType == sortDREMA200BTC ? (isAscending ? '↓' : '↑') : ''),
             80),
         onPressed: () {
-          sortType = sortDREMA200BTC;
-          isAscending = !isAscending;
+          //sortType = sortDREMA200BTC;
+          //isAscending = !isAscending;
           //data.sortDREMA200(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // RSI(14)
@@ -475,14 +507,14 @@ class _MyHomePageState extends State<HighSchoolPage> {
           padding: EdgeInsets.zero,
         ),
         child: _getTitleItemWidget(
-            'RSI(14)\n日足' +
+            'RSI(14)\n4時間足' +
                 (sortType == sortRSI14 ? (isAscending ? '↓' : '↑') : ''),
             80),
         onPressed: () {
-          sortType = sortRSI14;
-          isAscending = !isAscending;
+          //sortType = sortRSI14;
+          //isAscending = !isAscending;
           //data.sortRSI14(isAscending);
-          setState(() {});
+          //setState(() {});
         },
       ),
       // BTC連動率
@@ -550,12 +582,12 @@ class _MyHomePageState extends State<HighSchoolPage> {
     int lp = data.cryptoInfo[index].lPoint;
     int sp = data.cryptoInfo[index].sPoint;
     int point = lp + sp;
-    Color c = Colors.white;
+    Color c = Theme.of(context).scaffoldBackgroundColor;
     if (lp > 0){
-      c = Colors.lightGreen.shade50;
+      c = Theme.of(context).hoverColor;
     }
     if (sp > 0) {
-      c = Colors.pink.shade50;
+      c = Theme.of(context).highlightColor;
     }
     return Container(
       child: Text(data.cryptoInfo[index].pair.replaceFirst('USDT', '')),
@@ -570,12 +602,12 @@ class _MyHomePageState extends State<HighSchoolPage> {
   // ＞0 で緑色
   // ＜0 で赤色
   Text _getPercentText(double percent){
-    Color textColor = Colors.black;
+    Color textColor = Colors.amber;
     if (percent > 0){
-      textColor = Colors.green;
+      textColor = Colors.green.shade400;
     }
     if (percent < 0){
-      textColor = Colors.red;
+      textColor = Colors.red.shade400;
     }
     return Text(
       percent.toString() + " %",
@@ -595,12 +627,12 @@ class _MyHomePageState extends State<HighSchoolPage> {
       }
     }
     devRate = (devRate * 100).floor() / 100;
-    Color c = Colors.white;
+    Color c = Theme.of(context).scaffoldBackgroundColor;
     if (lp > 0){
-      c = Colors.lightGreen.shade50;
+      c = Theme.of(context).hoverColor;
     }
     if (sp > 0) {
-      c = Colors.pink.shade50;
+      c = Theme.of(context).highlightColor;
     }
 
     return Row(

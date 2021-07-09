@@ -19,7 +19,8 @@ class _MyHomePageState extends State<MyHomePage>{
     ChangeRatePage(title: '変動率(先物)'),
     ChangeRateSpotPage(title: '変動率(現物)'),
     HighSchoolPage(title: '高卒たんメソッド'),
-    CustomPage2(pannelColor: Colors.pink, title: '高卒たん改')
+    CustomPage2(pannelColor: Colors.pink, title: '高卒たん改'),
+    CustomPage1(pannelColor: Colors.pink, title: '(´･ω･｀) '),
   ];
 
   // タップしたらインデックスを代入
@@ -60,6 +61,10 @@ class _MyHomePageState extends State<MyHomePage>{
               icon: Icon(Icons.format_list_bulleted),
               title: Text('高卒たん改'),
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.format_list_bulleted),
+              title: Text('(´･ω･｀) '),
+            ),
           ],
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
@@ -85,8 +90,9 @@ class CustomPage1 extends StatelessWidget {
         child: Column(
           children: [
             Image.asset('images/img1.jpg'),
-            Text('作成中です。しばらくお待ち下さい'),
-            Image.asset('images/img3.png'),
+            Text('何かの間違いでもし億ってしまったらおこぼれください ＜(_ _)＞'),
+            Image.asset('images/btcaddress.png'),
+            Text('bc1qff33pn3kwltpflzfks6z0mxqkzl2kwwfjva35g'),
           ]
         )
       ),
