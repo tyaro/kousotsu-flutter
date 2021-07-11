@@ -37,29 +37,30 @@ class _MyHomePageState extends State<HighSchoolPage> {
 
   bool isAscending = true;
   int sortType = sortPair;
-  bool firstFlag = true;
-  int samplingTime = 1;
+  int samplingTime = 10;
   kousotsutanInfos data = new kousotsutanInfos();
-
+  var _timer;
 
   @override
   void initState()  {
-    Timer.periodic(
-      Duration(seconds: samplingTime),
-      _onTimer,
-    );
-    super.initState();
-    if (firstFlag == true){
-      firstFlag = false;
-      samplingTime = 5;
-    }
-    /*
     fetchKousotsutanInfo().then((value) {
       setState(() {
         data.cryptoInfo = value;
       });
     });
-   */
+    super.initState();
+    Timer.periodic(
+      Duration(seconds: samplingTime),
+      _onTimer,
+    );
+  }
+  @override
+  void dispose() {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    super.dispose();
+    print("dispose");
   }
 
   void _onTimer(Timer timer) {

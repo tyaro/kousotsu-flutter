@@ -27,30 +27,34 @@ class _MyHomePageState extends State<ChangeRatePage> {
   static const int sortCRate720 = 9;
   bool isAscending = true;
   int sortType = sortPair;
-  bool firstFlag = true;
-  int samplingTime = 1;
-  ChangeRateInfos data = new ChangeRateInfos();
 
+  int samplingTime = 10;
+  ChangeRateInfos data = new ChangeRateInfos();
+  var _timer;
 
   @override
   void initState()  {
-    Timer.periodic(
-      Duration(seconds: samplingTime),
-      _onTimer,
-    );
-    super.initState();
-    if (firstFlag == true){
-      firstFlag = false;
-      samplingTime = 5;
-    }
-    /*
     fetchChangeRateInfo().then((value) {
       setState(() {
         data.cryptoInfo = value;
       });
     });
-    */
+    super.initState();
+    _timer = new Timer.periodic(
+      Duration(seconds: samplingTime),
+      _onTimer,
+    );
   }
+
+  @override
+  void dispose() {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    super.dispose();
+    print("dispose");
+  }
+
 
   void _onTimer(Timer timer) {
     bool isTemp = isAscending;
